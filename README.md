@@ -12,4 +12,8 @@ In the folder `frontend` we have a very simple React frontend. Go to the fronten
 ## Tasks:
 
 Go to folder `backend`
-Run command `bun init` 
+Run commands:
+```bash
+bun install
+bun run index.ts
+```
