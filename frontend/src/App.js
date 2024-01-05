@@ -8,58 +8,113 @@ const api = axios.create({
 });
 
 function App() {
-  const [data, setData] = useState('');
+  const [greeting, setGreeting] = useState('');
   const [textInput, setTextInput] = useState('');
-  const [hash, setHash] = useState('');
+  const [message, setMessage] = useState('');
+  const [registerUsername, setRegisterUsername] = useState('');
+  const [registerPassword, setRegisterPassword] = useState('');
+  const [loginUsername, setLoginUsername] = useState('');
+  const [loginPassword, setLoginPassword] = useState('');
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchGreeting = async () => {
       try {
         const result = await api.get('/');
-        setData(result.data); // Assuming result is an Axios response object
+        setGreeting(result.data);
       } catch (error) {
-        // Handle error as needed
+        console.error('Error fetching the greeting:', error);
       }
     };
-  
-    fetchData();
+
+    fetchGreeting();
   }, []);
-  
 
 
-  const handleSubmit = async () => {
+
+  const handleWrite = async () => {
     try {
-      await api.post('/submit', { text: textInput });
-      setTextInput(''); // Clear the input field
+      await api.post('/write', { message: textInput });
+      setTextInput('');
     } catch (error) {
-      // Handle error as needed
+      console.error('Error posting the message:', error);
     }
   };
 
-  const handleShowHash = async () => {
+  const handleRead = async () => {
     try {
-      const response = await api.get('/hash');
-      setHash(response.data.hash);
+      const response = await api.get('/message');
+      setMessage(response.data.message);
     } catch (error) {
-      // Handle error as needed
+      console.error('Error fetching the message:', error);
+    }
+  };
+
+  const handleRegister = async () => {
+    try {
+      await api.post('/register', { username: registerUsername, password: registerPassword });
+    } catch (error) {
+      setError('Error registering user');
+    }
+  };
+
+  const handleLogin = async () => {
+    try {
+      await api.post('/login', { username: loginUsername, password: loginPassword });
+    } catch (error) {
+      setError('Error logging in');
     }
   };
 
   return (
     <div className="App">
       <header className="App-header">
-        <h1>Data from the root: {data ? data : ""}</h1>
+        <h1>Greeting from the root: {greeting ? greeting : ""}</h1>
       </header>
 
       <input
         type="text"
         value={textInput}
         onChange={(e) => setTextInput(e.target.value)}
-        placeholder="Enter text"
+        placeholder="Enter new message"
       />
-      <button onClick={handleSubmit}>Submit</button>
-      <button onClick={handleShowHash}>Show Hash</button>
-      {hash && <p>Hash: {hash}</p>}
+      <button onClick={handleWrite}>Write to file</button>
+      <button onClick={handleRead}>Read from file</button>
+      {message && <p>Message: {message}</p>}
+
+      <div>
+        <h2>Register</h2>
+        <input
+          type="text"
+          value={registerUsername}
+          onChange={(e) => setRegisterUsername(e.target.value)}
+          placeholder="Username"
+        />
+        <input
+          type="password"
+          value={registerPassword}
+          onChange={(e) => setRegisterPassword(e.target.value)}
+          placeholder="Password"
+        />
+        <button onClick={handleRegister}>Register</button>
+      </div>
+
+      <div>
+        <h2>Login</h2>
+        <input
+          type="text"
+          value={loginUsername}
+          onChange={(e) => setLoginUsername(e.target.value)}
+          placeholder="Username"
+        />
+        <input
+          type="password"
+          value={loginPassword}
+          onChange={(e) => setLoginPassword(e.target.value)}
+          placeholder="Password"
+        />
+        <button onClick={handleLogin}>Login</button>
+      </div>
     </div>
   );
 }
