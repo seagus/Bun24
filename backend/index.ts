@@ -89,8 +89,13 @@ app.get('/message', async (req: Request, res: Response<SubmitResponseBody>) => {
   try {
     const file = Bun.file('input.txt');
     const message = await file.text();
-    const responseBody: SubmitResponseBody = { success: true, message };
-    res.json(responseBody);
+    if (message) {
+      const responseBody: SubmitResponseBody = { success: true, message };
+      res.json(responseBody);
+    } else {
+      const responseBody: SubmitResponseBody = { success: false, error: "File empty" };
+      res.status(500).json(responseBody);
+    }
   } catch (error) {
     console.error('Error fetching hash from file:', error);
     const responseBody: SubmitResponseBody = { success: false, error: 'Internal Server Error' };
@@ -109,8 +114,7 @@ app.post('/register', async (req: Request, res: Response) => {
     query.run(username, hashedPassword);
 
     res.json({ success: true });
-  } catch (error) {
-    console.error('Error fetching messages:', error);
+  } catch (error: any) {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
