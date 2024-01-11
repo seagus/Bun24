@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import Alert from '@mui/material/Alert';
-import IconButton from '@mui/material/IconButton';
-import Collapse from '@mui/material/Collapse';
+import {
+  Alert,
+  IconButton,
+  Collapse,
+  Container,
+  Typography,
+  TextField,
+  Button,
+  Grid,
+  Paper,
+} from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import Container from '@mui/material/Container';
-import Typography from '@mui/material/Typography';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import Grid from '@mui/material/Grid';
-import Paper from '@mui/material/Paper';
+
 
 const baseURL = 'http://localhost:8080'; // Replace with your server URL
 
@@ -20,11 +23,12 @@ const api = axios.create({
 const App = () => {
   const [greeting, setGreeting] = useState('');
   const [textInput, setTextInput] = useState('');
-  const [message, setMessage] = useState({ text: '', severity: '', open: true });
+  const [alert, setAlert] = useState({ text: '', severity: 'success', open: false });
   const [registerUsername, setRegisterUsername] = useState('');
   const [registerPassword, setRegisterPassword] = useState('');
   const [loginUsername, setLoginUsername] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
+  const [message, setMessage] = useState('');
 
   useEffect(() => {
     const fetchGreeting = async () => {
@@ -40,7 +44,7 @@ const App = () => {
   }, []);
 
   const handleClose = () => {
-    setMessage({ ...message, open: false });
+    setAlert({ ...alert, open: false });
   };
 
   const handleWrite = async () => {
@@ -51,49 +55,50 @@ const App = () => {
 
       await api.post('/write', { message: textInput });
       setTextInput('');
-      setMessage({ text: 'Message was successfully written to the file', severity: 'success', open: true });
+      setAlert({ text: 'Message was successfully written to the file', severity: 'success', open: true });
     } catch (error) {
       console.error('Error posting the message:', error);
-      setMessage({ text: 'Error writing to the file, message cannot be empty', severity: 'error', open: true });
+      setAlert({ text: 'Error writing to the file, message cannot be empty', severity: 'error', open: true });
     }
   };
 
   const handleRead = async () => {
     try {
       const response = await api.get('/message');
-      setMessage({ text: response.data.message, severity: 'success', open: true });
+      setMessage(response.data.message);
+      setAlert({ text: "Message was successfully read", severity: 'success', open: true });
     } catch (error) {
       console.error('Error making a request:', error);
-      setMessage({ text: 'Error reading the file', severity: 'error', open: true });
+      setAlert({ text: 'Error reading the file', severity: 'error', open: true });
     }
   };
 
   const handleRegister = async () => {
     try {
       await api.post('/register', { username: registerUsername, password: registerPassword });
-      setMessage({ text: 'User registered successfully', severity: 'success', open: true });
+      setAlert({ text: 'User registered successfully', severity: 'success', open: true });
     } catch (error) {
       console.error('Error registering:', error);
-      setMessage({ text: 'Username must be unique', severity: 'error', open: true });
+      setAlert({ text: 'Username must be unique', severity: 'error', open: true });
     }
   };
 
   const handleLogin = async () => {
     try {
       await api.post('/login', { username: loginUsername, password: loginPassword });
-      setMessage({ text: 'Login was successful!', severity: 'success', open: true });
+      setAlert({ text: 'Login was successful!', severity: 'success', open: true });
     } catch (error) {
       console.error('Error logging in:', error);
-      setMessage({ text: 'Wrong credentials', severity: 'error', open: true });
+      setAlert({ text: 'Wrong credentials', severity: 'error', open: true });
     }
   };
 
   return (
     <Container component="main" maxWidth="md">
       <Paper elevation={3} sx={{ padding: 3, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <Collapse in={message.open}>
+        <Collapse in={alert.open}>
           <Alert
-            severity={message.severity}
+            severity={alert.severity}
             action={
               <IconButton aria-label="close" color="inherit" size="small" onClick={handleClose}>
                 <CloseIcon fontSize="inherit" />
@@ -101,7 +106,7 @@ const App = () => {
             }
             sx={{ mb: 2 }}
           >
-            {message.text}
+            {alert.text}
           </Alert>
         </Collapse>
         <Typography component="h1" variant="h5">
@@ -112,6 +117,7 @@ const App = () => {
           margin="normal"
           required
           fullWidth
+          multiline
           id="textInput"
           label="Enter new message"
           name="textInput"
@@ -130,7 +136,28 @@ const App = () => {
             </Button>
           </Grid>
         </Grid>
-
+        {message !== '' && (
+          <Grid item xs={12}>
+            <Paper elevation={3} style={{ padding: '8px', margin: '14px', display: 'flex', alignItems: 'flex-start' }}>
+              <Grid item xs={9} style={{ maxWidth: '100%', margin: '14px' }}>
+                <Typography variant="h6" gutterBottom>
+                  Here is the message from the backend file:
+                </Typography>
+                <Typography variant="body1" gutterBottom>
+                  {message}
+                </Typography>
+              </Grid>
+              <Grid item xs={3}>
+                <IconButton
+                  aria-label="close"
+                  onClick={() => setMessage('')}
+                >
+                  <CloseIcon />
+                </IconButton>
+              </Grid>
+            </Paper>
+          </Grid>
+        )}
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <Typography variant="h6">Register</Typography>

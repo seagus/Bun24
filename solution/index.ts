@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
 import { Database } from "bun:sqlite";
+import { faker } from '@faker-js/faker';
 
 const app = express();
 const port = 8080;
@@ -21,21 +22,28 @@ interface User {
   password: string;
 }
 
-// TASK: create sqlite database
-
 app.use(cors());
 app.use(express.json());
 
+const db = new Database('mydb.sqlite', { create: true });
+db.query(
+  `CREATE TABLE IF NOT EXISTS Users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT UNIQUE NOT NULL,
+    password TEXT NOT NULL
+  );`,
+).run();
+
+
 app.get('/', (req: Request, res: Response) => {
-  // TASK: faker
-  res.send("Hello!");
+  const randomString = faker.hacker.phrase();
+  res.send(randomString);
 });
 
 app.post('/write', async (req: Request, res: Response) => {
   try {
     const { message } = req.body as SubmitRequestBody;
-
-    // TASK: Write the message to file input.txt
+    await Bun.write('input.txt', message);
 
     const responseBody: SubmitResponseBody = { success: true, message };
     res.json(responseBody);
@@ -47,10 +55,8 @@ app.post('/write', async (req: Request, res: Response) => {
 
 app.get('/message', async (req: Request, res: Response<SubmitResponseBody>) => {
   try {
-
-    // TASK: Read value from file input.txt, and save to message constant.
-    const message = "";
-
+    const file = Bun.file('input.txt');
+    const message = await file.text();
     if (message) {
       const responseBody: SubmitResponseBody = { success: true, message };
       res.json(responseBody);
