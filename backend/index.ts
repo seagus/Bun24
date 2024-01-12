@@ -21,13 +21,13 @@ interface User {
   password: string;
 }
 
-// TASK: create sqlite database
+// 3. TASK: create sqlite database
 
 app.use(cors());
 app.use(express.json());
 
 app.get('/', (req: Request, res: Response) => {
-  // TASK: faker
+  // 1. TASK: faker
   res.send("Hello!");
 });
 
@@ -35,7 +35,7 @@ app.post('/write', async (req: Request, res: Response) => {
   try {
     const { message } = req.body as SubmitRequestBody;
 
-    // TASK: Write the message to file input.txt
+    // 2. TASK: Write the message to file input.txt
 
     const responseBody: SubmitResponseBody = { success: true, message };
     res.json(responseBody);
@@ -48,7 +48,7 @@ app.post('/write', async (req: Request, res: Response) => {
 app.get('/message', async (req: Request, res: Response<SubmitResponseBody>) => {
   try {
 
-    // TASK: Read value from file input.txt, and save to message constant.
+    // 2. TASK: Read value from file input.txt, and save to message constant.
     const message = "";
 
     if (message) {
@@ -67,10 +67,9 @@ app.get('/message', async (req: Request, res: Response<SubmitResponseBody>) => {
 app.post('/register', async (req: Request, res: Response) => {
   try {
     const { username, password } = req.body;
-    const hashedPassword = await Bun.password.hash(password);
+    // 4. TASK: Hash password using Bun.password
 
-    const query = db.prepare(`INSERT INTO Users (username, password) VALUES (?, ?)`);
-    query.run(username, hashedPassword);
+    // 3. TASK: Save user to db
 
     res.json({ success: true });
   } catch (error) {
@@ -83,13 +82,10 @@ app.post('/login', async (req: Request, res: Response) => {
   try {
     const { username, password } = req.body;
 
-    const user: User | undefined = db.prepare('SELECT * FROM Users WHERE username = ?').get(username) as User | undefined;
+    // 3. TASK: Get user from the db
 
-    if (!user || !(await Bun.password.verify(password, user.password))) {
-      return res.status(401).json({ error: 'Authentication failed. Invalid username or password.' });
-    }
+    // 4. TASK: Verify password
 
-    res.json({ success: true });
   } catch (error) {
     console.error('Error fetching messages:', error);
     res.status(500).json({ error: 'Internal Server Error' });
