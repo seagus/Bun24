@@ -23,11 +23,24 @@ sudo apt-get install unzip
 ```
 ### Instructions for Windows:
 
-If you have Windows, use remember to use WSL for everything. You can install WSL in PowerShell with the command `wsl --install`. You can install WSL in PowerShell by using the command `wsl --install`. After installation, you will need to restart your computer, and then you should be able to open Ubuntu through the Windows search menu.
+You can install WSL in PowerShell by using the command:
+```bash
+wsl --install
+```
+After running this, you will need to restart your computer, and then you should be able to open Ubuntu through the Windows search menu.
 
-After installing WSL, you should run the commands `sudo apt update` and `sudo apt full-upgrade`. Additionally, you will need to install node. Once you have completed these steps, you can clone the repository. If you installed WSL, you will need to create and add the SSH keys to GitHub.
+Next you should run commands: 
+```bash
+sudo apt update
+sudo apt full-upgrade
+``` 
+Additionally, you will need to install node. Once you have completed these steps, you can clone the repository. You will need to create and add the SSH keys to GitHub.
 
- If you have Visual Studio Code installed, open the repository in Ubuntu and run the command `code .`. It may ask for permission the first time it is called. This will open the project in VSC. If you use the VSC terminal, make sure it is the Ubuntu (WSL) terminal. ![Selecting Terminal](image.png)
+If you have Visual Studio Code installed, open the project folder in Ubuntu and run the command: 
+```bash 
+code .
+```
+ It may ask for permission the first time it is called. This will open the project in VSC. If you use the VSC terminal, make sure it is the Ubuntu (WSL) terminal. ![Selecting Terminal](image.png)
 
 ### Node version:
 To run the project, we need to have Node installed. However, WSL does not come with Node installed, and the command `sudo apt install nodejs` gives a very old version of Node that may not work well with Bun. To install the current version of Node.js in WSL or Ubuntu, use the following commands.
