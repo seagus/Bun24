@@ -64,7 +64,7 @@ const App = () => {
 
   const handleRead = async () => {
     try {
-      const response = await api.get('/message');
+      const response = await api.get('/read');
       setMessage(response.data.message);
       setAlert({ text: "Message was successfully read", severity: 'success', open: true });
     } catch (error) {
@@ -79,7 +79,7 @@ const App = () => {
       setAlert({ text: 'User registered successfully', severity: 'success', open: true });
     } catch (error) {
       console.error('Error registering:', error);
-      setAlert({ text: 'Username must be unique', severity: 'error', open: true });
+      setAlert({ text: 'Error creating a new user. Username must be unique', severity: 'error', open: true });
     }
   };
 

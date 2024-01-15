@@ -22,28 +22,27 @@ interface User {
   password: string;
 }
 
+// 3. TASK: create sqlite database
+const db = new Database("bundb.sqlite");
+db.query(`CREATE TABLE IF NOT EXISTS Users (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  username TEXT UNIQUE NOT NULL,
+  password TEXT NOT NULL
+);`,).run();
+
 app.use(cors());
 app.use(express.json());
 
-const db = new Database('mydb.sqlite', { create: true });
-db.query(
-  `CREATE TABLE IF NOT EXISTS Users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    username TEXT UNIQUE NOT NULL,
-    password TEXT NOT NULL
-  );`,
-).run();
-
-
 app.get('/', (req: Request, res: Response) => {
-  const randomString = faker.hacker.phrase();
-  res.send(randomString);
+  res.send(faker.hacker.phrase());
 });
 
 app.post('/write', async (req: Request, res: Response) => {
   try {
     const { message } = req.body as SubmitRequestBody;
-    await Bun.write('input.txt', message);
+
+    // 2. TASK: Write the message to file input.txt
+    await Bun.write("input.txt", message);
 
     const responseBody: SubmitResponseBody = { success: true, message };
     res.json(responseBody);
@@ -53,12 +52,14 @@ app.post('/write', async (req: Request, res: Response) => {
   }
 });
 
-app.get('/message', async (req: Request, res: Response<SubmitResponseBody>) => {
+app.get('/read', async (req: Request, res: Response<SubmitResponseBody>) => {
   try {
-    const file = Bun.file('input.txt');
-    const message = await file.text();
-    if (message) {
-      const responseBody: SubmitResponseBody = { success: true, message };
+
+    // 2. TASK: Read value from file input.txt, and save to message constant.
+    const text = await Bun.file("input.txt").text();
+
+    if (text) {
+      const responseBody: SubmitResponseBody = { success: true, message: text };
       res.json(responseBody);
     } else {
       const responseBody: SubmitResponseBody = { success: false, error: "File empty" };
@@ -73,10 +74,12 @@ app.get('/message', async (req: Request, res: Response<SubmitResponseBody>) => {
 app.post('/register', async (req: Request, res: Response) => {
   try {
     const { username, password } = req.body;
-    const hashedPassword = await Bun.password.hash(password);
+    // 4. TASK: Hash password using Bun.password
+    const hash = await Bun.password.hash(password);
 
-    const query = db.prepare(`INSERT INTO Users (username, password) VALUES (?, ?)`);
-    query.run(username, hashedPassword);
+    // 3. TASK: Save user to db
+    const insert = db.prepare("INSERT INTO Users (username, password) VALUES (?, ?)");
+    insert.run(username, hash);
 
     res.json({ success: true });
   } catch (error) {
@@ -89,13 +92,18 @@ app.post('/login', async (req: Request, res: Response) => {
   try {
     const { username, password } = req.body;
 
-    const user: User | undefined = db.prepare('SELECT * FROM Users WHERE username = ?').get(username) as User | undefined;
+    // 3. TASK: Get user from the db
+    const user = db.prepare('SELECT * FROM Users WHERE username = ?').get(username) as User;
 
-    if (!user || !(await Bun.password.verify(password, user.password))) {
-      return res.status(401).json({ error: 'Authentication failed. Invalid username or password.' });
+    // 4. TASK: Verify password
+    if (user && await Bun.password.verify(password, user.password)) {
+      res.json({ success: true });
+    }
+    else {
+      res.status(500).json({ error: 'Wrong credentials' });
     }
 
-    res.json({ success: true });
+
   } catch (error) {
     console.error('Error fetching messages:', error);
     res.status(500).json({ error: 'Internal Server Error' });

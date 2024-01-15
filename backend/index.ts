@@ -45,14 +45,14 @@ app.post('/write', async (req: Request, res: Response) => {
   }
 });
 
-app.get('/message', async (req: Request, res: Response<SubmitResponseBody>) => {
+app.get('/read', async (req: Request, res: Response<SubmitResponseBody>) => {
   try {
 
     // 2. TASK: Read value from file input.txt, and save to message constant.
-    const message = "";
+    const text = "";
 
-    if (message) {
-      const responseBody: SubmitResponseBody = { success: true, message };
+    if (text) {
+      const responseBody: SubmitResponseBody = { success: true, message: text };
       res.json(responseBody);
     } else {
       const responseBody: SubmitResponseBody = { success: false, error: "File empty" };
@@ -81,11 +81,15 @@ app.post('/register', async (req: Request, res: Response) => {
 app.post('/login', async (req: Request, res: Response) => {
   try {
     const { username, password } = req.body;
-
     // 3. TASK: Get user from the db
+    const user = { id: 1, username: "", password: "" } as User;
 
     // 4. TASK: Verify password
-
+    if (user && password === user.password) {
+      res.json({ success: true });
+    } else {
+      return res.status(401).json({ error: 'Authentication failed. Invalid username or password.' });
+    }
   } catch (error) {
     console.error('Error fetching messages:', error);
     res.status(500).json({ error: 'Internal Server Error' });
