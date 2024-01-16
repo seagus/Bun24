@@ -44,11 +44,11 @@ app.post('/write', async (req: Request, res: Response) => {
     // 2. TASK: Write the message to file input.txt
     await Bun.write("input.txt", message);
 
-    const responseBody: SubmitResponseBody = { success: true, message };
+    const responseBody: SubmitResponseBody = { success: true };
     res.json(responseBody);
   } catch (error) {
     console.error('Error processing submission:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: 'Failed to write message to file.' });
   }
 });
 
@@ -62,12 +62,11 @@ app.get('/read', async (req: Request, res: Response<SubmitResponseBody>) => {
       const responseBody: SubmitResponseBody = { success: true, message: text };
       res.json(responseBody);
     } else {
-      const responseBody: SubmitResponseBody = { success: false, error: "File empty" };
-      res.status(500).json(responseBody);
+      res.status(500).json({  error: "File is empty" });
     }
   } catch (error) {
     console.error('Error fetching hash from file:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: 'Failed to read from file.' });
   }
 });
 
@@ -84,7 +83,7 @@ app.post('/register', async (req: Request, res: Response) => {
     res.json({ success: true });
   } catch (error) {
     console.error('Error fetching messages:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: 'Failed to register user. Username must be unique.' });
   }
 });
 
@@ -100,13 +99,13 @@ app.post('/login', async (req: Request, res: Response) => {
       res.json({ success: true });
     }
     else {
-      res.status(500).json({ error: 'Wrong credentials' });
+      res.status(500).json({ error: 'Authentication failed.' });
     }
 
 
   } catch (error) {
     console.error('Error fetching messages:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: 'Failed to log in.' });
   }
 });
 

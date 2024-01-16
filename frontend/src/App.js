@@ -58,7 +58,7 @@ const App = () => {
       setAlert({ text: 'Message was successfully written to the file', severity: 'success', open: true });
     } catch (error) {
       console.error('Error posting the message:', error);
-      setAlert({ text: 'Error writing to the file, message cannot be empty', severity: 'error', open: true });
+      setAlert({ text: error.response?.data.error || 'Error writing to the file, message cannot be empty', severity: 'error', open: true });
     }
   };
 
@@ -69,7 +69,7 @@ const App = () => {
       setAlert({ text: "Message was successfully read", severity: 'success', open: true });
     } catch (error) {
       console.error('Error making a request:', error);
-      setAlert({ text: 'Error reading the file', severity: 'error', open: true });
+      setAlert({ text: error.response?.data.error || 'Error reading the file', severity: 'error', open: true });
     }
   };
 
@@ -79,7 +79,7 @@ const App = () => {
       setAlert({ text: 'User registered successfully', severity: 'success', open: true });
     } catch (error) {
       console.error('Error registering:', error);
-      setAlert({ text: 'Error creating a new user. Username must be unique', severity: 'error', open: true });
+      setAlert({ text: error.response?.data.error || 'Error creating a new user. Username must be unique', severity: 'error', open: true });
     }
   };
 
@@ -89,7 +89,7 @@ const App = () => {
       setAlert({ text: 'Login was successful!', severity: 'success', open: true });
     } catch (error) {
       console.error('Error logging in:', error);
-      setAlert({ text: 'Wrong credentials', severity: 'error', open: true });
+      setAlert({ text: error.response?.data.error || 'Login failed', severity: 'error', open: true });
     }
   };
 

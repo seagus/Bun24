@@ -3,26 +3,20 @@
 ##  Table of Contents
 
 - [Prerequisites](#prerequisites)
+  - [Windows (WSL)](#windows-wsl)
+  - [Linux](#linux)
+  - [macOS](#macos)
 - [Running backend and frontend](#running-backend-and-frontend)
 - [Tasks](#tasks)
-  - [1. Installing package](#1-installing-package)
+  - [1. Installing a package](#1-installing-a-package)
   - [2. File I/O](#2-file-io)
   - [3. Bun:sqlite](#3-bunsqlite)
   - [4. Password](#4-password)
 
 ## Prerequisites
+Follow the instructions below based on your operating system:
 
-Install Bun if not already: 
-```bash
-curl -fsSL https://bun.sh/install | bash
-```
-
-To use the curl command, install unzip with this command if you get an error about that:
-```bash 
-sudo apt-get install unzip
-```
-### Instructions for Windows:
-
+### Windows (WSL):
 You can install WSL in PowerShell by using the command:
 ```bash
 wsl --install
@@ -34,16 +28,18 @@ Next you should run commands:
 sudo apt update
 sudo apt full-upgrade
 ``` 
-Additionally, you will need to install node. Once you have completed these steps, you can clone the repository. You will need to create and add the SSH keys to GitHub.
 
-If you have Visual Studio Code installed, open the project folder in Ubuntu and run the command: 
+Install unzip with this command:
 ```bash 
-code .
+sudo apt-get install unzip
 ```
- It may ask for permission the first time it is called. This will open the project in VSC. If you use the VSC terminal, make sure it is the Ubuntu (WSL) terminal. ![Selecting Terminal](image.png)
 
-### Node version:
-To run the project, we need to have Node installed. However, WSL does not come with Node installed, and the command `sudo apt install nodejs` gives a very old version of Node that may not work well with Bun. To install the current version of Node.js in WSL or Ubuntu, use the following commands.
+Install Bun: 
+```bash
+curl -fsSL https://bun.sh/install | bash
+```
+
+To run the project, we need to have Node installed. However, WSL does not come with Node installed, and the command `sudo apt install nodejs` gives a very old version of Node that may not work well with Bun. To install the current version of Node.js in WSL, use the following commands.
 ```bash
 sudo apt-get update && sudo apt-get install -y ca-certificates curl gnupg
 curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
@@ -52,7 +48,40 @@ echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.co
 sudo apt-get update && sudo apt-get install nodejs -y
 ```
 
-With Homebrew these the following commands should work:
+Once you have completed these steps, you can clone the repository from GitHub using HTTPS.
+
+You can use [Visual Studio Code](https://code.visualstudio.com/docs/setup/windows) installed on Windows to edit code. Go to the project folder in the Ubuntu command line and execute the command:
+```bash 
+code .
+```
+It may ask for permission to use localhost. This will open the project in VSCode. If you use the VSCode terminal, make sure it is the Ubuntu (WSL) terminal. ![Selecting Terminal](image.png)
+
+### Linux
+unzip is needed to use the curl command. It can be installed with this command:
+```bash 
+sudo apt-get install unzip
+```
+
+Install Bun: 
+```bash
+curl -fsSL https://bun.sh/install | bash
+```
+
+To run the project, we need to have a relatively recent version of Node.js installed, preferably v20. To install the current version of Node.js in Ubuntu, use the following commands.
+```bash
+sudo apt-get update && sudo apt-get install -y ca-certificates curl gnupg
+curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
+NODE_MAJOR=20
+echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list
+sudo apt-get update && sudo apt-get install nodejs -y
+```
+
+### macOS
+Install Bun if not already: 
+```bash
+curl -fsSL https://bun.sh/install | bash
+```
+To successfully run the project, it's essential to have a relatively recent version of Node.js installed, preferably v20. With Homebrew these the following commands should work:
 
 ```bash
 brew update
@@ -90,9 +119,9 @@ Don't worry, the input fields are not supposed to be functional yet.
  ## Tasks:
 
 
-### 1. Installing package
+### 1. Installing a package
 
-Install a npm package [faker](https://fakerjs.dev) using Bun:
+Install a npm package [faker](https://fakerjs.dev) using Bun to the backend project:
 ```bash
 bun add @faker-js/faker
 ```
