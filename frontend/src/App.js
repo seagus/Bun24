@@ -89,26 +89,28 @@ const App = () => {
       setAlert({ text: 'Login was successful!', severity: 'success', open: true });
     } catch (error) {
       console.error('Error logging in:', error);
-      setAlert({ text: error.response?.data.error || 'Login failed', severity: 'error', open: true });
+      setAlert({ text: error.response?.data.error || 'Login failed.', severity: 'error', open: true });
     }
   };
 
   return (
     <Container component="main" maxWidth="md">
-      <Paper elevation={3} sx={{ padding: 3, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <Collapse in={alert.open}>
-          <Alert
-            severity={alert.severity}
-            action={
-              <IconButton aria-label="close" color="inherit" size="small" onClick={handleClose}>
-                <CloseIcon fontSize="inherit" />
-              </IconButton>
-            }
-            sx={{ mb: 2 }}
-          >
-            {alert.text}
-          </Alert>
-        </Collapse>
+      <Collapse in={alert.open}>
+        <Alert
+          severity={alert.severity}
+          action={
+            <IconButton aria-label="close" color="inherit" size="small" onClick={handleClose}>
+              <CloseIcon fontSize="inherit" />
+            </IconButton>
+          }
+          sx={{ mb: 2, position: 'fixed', top: 0, left: "50%", transform: 'translateX(-50%)', width: '100%', zIndex: 9999 }}
+
+        >
+          {alert.text}
+        </Alert>
+      </Collapse>
+      <Paper elevation={3} sx={{ padding: 3, display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: "50px" }}>
+
         <Typography component="h1" variant="h5">
           Greeting from the root: {greeting || ''}
         </Typography>
