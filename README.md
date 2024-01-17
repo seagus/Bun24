@@ -80,12 +80,23 @@ sudo apt-get update && sudo apt-get install nodejs -y
 Install Bun if not already: 
 ```bash
 curl -fsSL https://bun.sh/install | bash
+
+# Add bun to the PATH in ~/.bash_profile
+echo -e '\nexport BUN_INSTALL="$HOME/.bun"\nexport PATH="$BUN_INSTALL/bin:$PATH"' >> ~/.bash_profile
+source ~/.bash_profile
 ```
-To successfully run the project, it's essential to have a relatively recent version of Node.js installed, preferably v20. With Homebrew these the following commands should work:
+To successfully run the project, it's essential to have a relatively recent version of Node.js installed, preferably v20. Do this with Homebrew or NVM:
 
 ```bash
+# Install the latest version of node with Homebrew (option 1)
 brew update
 brew install node
+```
+
+```bash
+# Install and use the latest version of node with NVM (option 2)
+nvm install --lts
+nvm use --lts
 ```
 
 ## Running backend and frontend
